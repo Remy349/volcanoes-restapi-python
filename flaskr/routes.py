@@ -77,10 +77,46 @@ def add_volcanoes():
 
 @app.route("/api/volcanoes/<int:volcano_id>", methods=["PUT"])
 def update_volcano_id(volcano_id):
-    pass
+    data = request.get_json() or {}
+
+    volcano_found = {}
+
+    for volcano in volcanoes:
+        if volcano["id"] == volcano_id:
+            volcano_found = volcano
+
+    if volcano_found:
+        if "name" in data:
+            volcano_found["name"] = data["name"]
+        if "state" in data:
+            volcano_found["state"] = data["state"]
+        if "height" in data:
+            volcano_found["height"] = data["height"]
+        if "last_eruption" in data:
+            volcano_found["last_eruption"] = data["last_eruption"]
+
+        return jsonify({"volcano": volcano_found})
+
+    response = jsonify({"error": "ID not found!"})
+    response.status_code = 404
+
+    return response
 
 
 @app.route("/api/volcanoes/<int:volcano_id>", methods=["DELETE"])
 def delete_volcano_id(volcano_id):
-    pass
+    volcano_found = {}
+
+    for volcano in volcanoes:
+        if volcano["id"] == volcano_id:
+            volcano_found = volcano
+
+    if volcano_found:
+        volcanoes.remove(volcano_found)
+        return jsonify({"volcanoes": volcanoes})
+
+    response = jsonify({"error": "ID not found!"})
+    response.status_code = 404
+
+    return response
 

@@ -1,5 +1,29 @@
 from flaskr import app
-from flask import jsonify
+from flask import jsonify, request
+
+volcanoes = [
+    {
+        "id": 1,
+        "name": "Maderas volcano",
+        "state": "Inactive",
+        "height": "1,394m",
+        "last_eruption": "3,000 years ago"
+    },
+    {
+        "id": 2,
+        "name": "Mombacho volcano",
+        "state": "Inactive",
+        "height": "1,345m",
+        "last_eruption": "Unknown"
+    },
+    {
+        "id": 3,
+        "name": "Masaya volcano",
+        "state": "Active",
+        "height": "635m",
+        "last_eruption": "2003"
+    }
+]
 
 
 @app.route("/", methods=["GET"])
@@ -9,22 +33,46 @@ def index():
 
 @app.route("/api/volcanoes", methods=["GET"])
 def get_volcanoes():
-    pass
+    return jsonify(
+        {"volcanoes": volcanoes, "country": "Nicaragua"})
 
 
 @app.route("/api/volcanoes/<int:volcano_id>", methods=["GET"])
 def get_volcano_id(volcano_id):
-    pass
+    volcano_found = {}
 
+    for volcano in volcanoes:
+        if volcano["id"] == volcano_id:
+            volcano_found = volcano
 
-@app.route("/api/volcanoes/<string:volcano_name>", methods=["GET"])
-def get_volcano_name(volcano_name):
-    pass
+    if volcano_found:
+        return jsonify({"volcano": volcano_found})
+
+    response = jsonify({"error": "ID not found!"})
+    response.status_code = 404
+
+    return response
 
 
 @app.route("/api/volcanoes", methods=["POST"])
 def add_volcanoes():
-    pass
+    data = request.get_json() or {}
+
+    if "name" not in data or "state" not in data or "height" not in data \
+            or "last_eruption" not in data:
+        response = jsonify({"error": "Bad request!"})
+        response.status_code = 400
+
+        return response
+
+    data["id"] = len(volcanoes) + 1
+
+    volcanoes.append(data)
+
+    response = jsonify({"volcano": data})
+    response.status_code = 201
+
+    return response
 
 
 @app.route("/api/volcanoes/<int:volcano_id>", methods=["PUT"])

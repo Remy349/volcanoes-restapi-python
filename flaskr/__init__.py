@@ -11,5 +11,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db, compare_type=True)
 
 from flaskr import routes
+from flaskr import errors
 from flaskr import models
 

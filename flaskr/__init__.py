@@ -1,5 +1,9 @@
 from flask import Flask
 from config import Config
+from flaskr.extensions import db, migrate
+
+from flaskr.main.routes import bp as main_bp
+from flaskr.api.routes import bp as api_bp
 
 
 def create_app(config_class=Config):
@@ -7,22 +11,13 @@ def create_app(config_class=Config):
 
     app.config.from_object(config_class)
 
+    db.init_app(app)
+    migrate.init_app(app, db, compare_type=True)
+
+    app.register_blueprint(main_bp)
+    app.register_blueprint(api_bp, url_prefix="/api")
+
     return app
 
-# from flask import Flask
-# from config import Config
-# from flask_migrate import Migrate
-# from flask_sqlalchemy import SQLAlchemy
 
-# app = Flask(__name__)
-
-# app.config.from_object(Config)
-
-# db = SQLAlchemy(app)
-# migrate = Migrate(app, db, compare_type=True)
-
-# from flaskr import routes
-# from flaskr import errors
-# from flaskr import models
-# from flaskr import handlers
-
+from flaskr import models

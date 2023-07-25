@@ -9,9 +9,21 @@ class Volcano(db.Model):
     height = sa.Column(sa.String(30))
     last_eruption = sa.Column(sa.String(30))
 
+    def to_dict(self):
+        data = {
+            "id": self.id,
+            "name": self.name,
+            "state": self.state,
+            "height": self.height,
+            "last_eruption": self.last_eruption,
+        }
+
+        return data
+
     def __repr__(self):
         return f"""
-            id: {self.id}
+            id: {self.id},
+            name: {self.name}
         """
 
 

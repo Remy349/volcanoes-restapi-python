@@ -1,1 +1,1 @@
-from models.volcano import VolcanoModel
+from flaskr.models.volcano import VolcanoModel

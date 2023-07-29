@@ -1,16 +1,29 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
+from flaskr.extensions import db
+
+from flaskr.models import Volcano
 
 bp = Blueprint("api", __name__)
 
 
 @bp.get("/volcanoes")
 def get_volcanoes():
-    pass
+    query = db.session.execute(db.select(Volcano)).all()
+
+    response = jsonify([data.to_dict() for data in query])
+    response.status_code = 200
+
+    return response
 
 
 @bp.get("/volcanoes/<int:id>")
 def get_volcano(id):
-    pass
+    query = db.get_or_404(Volcano, id)
+
+    response = jsonify(query.to_dict())
+    response.status_code = 200
+
+    return response
 
 
 @bp.post("/volcanoes")

@@ -1,4 +1,4 @@
-# nicaragua-volcanoes-restapi-python
+# volcanoes-restapi-python
 
 ## Updating....
 

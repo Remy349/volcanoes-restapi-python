@@ -29,8 +29,13 @@ class Volcano(MethodView):
         else:
             volcano = VolcanoModel(id=volcano_id, **volcano_data)
 
-        db.session.add(volcano)
-        db.session.commit()
+        try:
+            db.session.add(volcano)
+            db.session.commit()
+        except IntegrityError as e:
+            abort(400, message=str(e))
+        except SQLAlchemyError as e:
+            abort(500, message=str(e))
 
         return volcano
 

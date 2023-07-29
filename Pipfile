@@ -10,7 +10,6 @@ flask-sqlalchemy = "==3.0.5"
 flask-migrate = "==4.0.4"
 flask-smorest = "==0.42.0"
 alembic = "==1.11.1"
-apispec = {version = "==6.3.0", extras = ["marshmallow"]}
 blinker = "==1.6.2"
 click = "==8.1.6"
 greenlet = "==2.0.2"
@@ -24,6 +23,12 @@ sqlalchemy = "==2.0.19"
 typing-extensions = "==4.7.1"
 webargs = "==8.3.0"
 werkzeug = "==2.3.6"
+pytest = "==7.4.0"
+apispec = {version = "==6.3.0", extras = ["marshmallow"]}
+exceptiongroup = "==1.1.2"
+iniconfig = "==2.0.0"
+pluggy = "==1.2.0"
+tomli = "==2.0.1"
 
 [dev-packages]
 

@@ -1,71 +1,41 @@
-from flask_smorest import Blueprint, abort
+from flask_smorest import Blueprint
 from flask.views import MethodView
 from flaskr.schemas import VolcanoSchema, VolcanoUpdateSchema
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from flaskr.extensions import db
-
-from flaskr.models import VolcanoModel
+from flaskr.controllers.volcano import VolcanoController
 
 bp = Blueprint("volcanoes", __name__, description="Operations on volcanoes")
+
+volcano_controller = VolcanoController()
 
 
 @bp.route("/volcano/<int:volcano_id>")
 class Volcano(MethodView):
     @bp.response(200, VolcanoSchema)
     def get(self, volcano_id):
-        volcano = db.get_or_404(VolcanoModel, volcano_id)
-        return volcano
+        """ Create a volcano by ID """
+        return volcano_controller.get_volcano(volcano_id)
 
     @bp.arguments(VolcanoUpdateSchema)
     @bp.response(200, VolcanoSchema)
     def put(self, volcano_data, volcano_id):
-        volcano = db.get_or_404(VolcanoModel, volcano_id)
-
-        if volcano:
-            volcano.name = volcano_data["name"]
-            volcano.height = volcano_data["height"]
-            volcano.last_eruption = volcano_data["last_eruption"]
-            volcano.state = volcano_data["state"]
-        else:
-            volcano = VolcanoModel(id=volcano_id, **volcano_data)
-
-        try:
-            db.session.add(volcano)
-            db.session.commit()
-        except IntegrityError as e:
-            abort(400, message=str(e))
-        except SQLAlchemyError as e:
-            abort(500, message=str(e))
-
-        return volcano
+        """ Update a volcano by ID """
+        return volcano_controller.update_volcano(volcano_data, volcano_id)
 
     @bp.response(204, example={"message": "Volcano deleted."})
     def delete(self, volcano_id):
-        volcano = db.get_or_404(VolcanoModel, volcano_id)
-
-        db.session.delete(volcano)
-        db.session.commit()
-
-        return {"message": "Volcano deleted."}
+        """ Delete a volcano by ID """
+        return volcano_controller.delete_volcano(volcano_id)
 
 
 @bp.route("/volcano")
 class VolcanoList(MethodView):
     @bp.response(200, VolcanoSchema(many=True))
     def get(self):
-        return db.session.execute(db.select(VolcanoModel)).scalars().all()
+        """ Get a list of all volcanoes """
+        return volcano_controller.get_volcanoes()
 
     @bp.arguments(VolcanoSchema)
     @bp.response(201, VolcanoSchema)
     def post(self, volcano_data):
-        volcano = VolcanoModel(**volcano_data)
-
-        try:
-            db.session.add(volcano)
-            db.session.commit()
-        except IntegrityError as e:
-            abort(400, message=str(e))
-        except SQLAlchemyError as e:
-            abort(500, message=str(e))
-
-        return volcano
+        """ Create a new volcano """
+        return volcano_controller.create_volcano(volcano_data)

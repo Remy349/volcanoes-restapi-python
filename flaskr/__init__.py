@@ -1,6 +1,6 @@
 import flaskr.models
 
-from config import Config
+from config import DevelopmentConfig
 from flask import Flask
 from flaskr.extensions import db, migrate, api
 
@@ -11,7 +11,7 @@ def create_app(testing_config=None):
     app = Flask(__name__)
 
     if testing_config is None:
-        app.config.from_object(Config)
+        app.config.from_object(DevelopmentConfig)
     else:
         app.config.from_object(testing_config)
 

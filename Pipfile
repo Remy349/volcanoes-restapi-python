@@ -28,6 +28,7 @@ exceptiongroup = "==1.1.2"
 iniconfig = "==2.0.0"
 pluggy = "==1.2.0"
 tomli = "==2.0.1"
+coverage = "==7.2.7"
 apispec = {version = "==6.3.0", extras = ["marshmallow"]}
 
 [dev-packages]

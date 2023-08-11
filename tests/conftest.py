@@ -4,19 +4,17 @@ from config import TestingConfig
 from flaskr.extensions import db
 
 
-@pytest.fixture()
+@pytest.fixture
 def app():
     app = create_app(testing_config=TestingConfig)
+    app_context = app.app_context()
+    app_context.push()
 
-    with app.app_context():
-        db.create_all()
+    db.create_all()
 
     yield app
 
-    with app.app_context():
-        db.drop_all()
+    db.session.remove()
+    db.drop_all()
 
-
-@pytest.fixture()
-def client(app):
-    return app.test_client()
+    app_context.pop()
